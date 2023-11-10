@@ -99,7 +99,7 @@ void saveTiket(tiket *head)
 
     if (!file.is_open())
     {
-        cout << "Gagal membuka file data_barang.csv" << endl;
+        cout << "Gagal membuka file data_tiket.csv" << endl;
         return;
     }
 
@@ -116,7 +116,7 @@ void saveTiket(tiket *head)
     file.close();
     cout << "" << endl;
     cout << "==========================================================\n";
-    cout << "|             succesfully adding to data_barang.csv             |\n";
+    cout << "|             succesfully adding to data_tiket.csv             |\n";
 }
 
 bool isEmpty(tiket *head, tiket *tail)
@@ -178,7 +178,7 @@ void saveCSV(tiket *head)
 
     if (!file.is_open())
     {
-        cout << "Gagal membuka file data_barang.csv" << endl;
+        cout << "Gagal membuka file data_tiket.csv" << endl;
         return;
     }
 
