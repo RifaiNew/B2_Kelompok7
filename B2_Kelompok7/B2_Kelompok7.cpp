@@ -16,9 +16,9 @@ struct akun
     akun *prev = NULL;
 };
 
-akun *cariUsername(akun *head, string x)
+akun *cariUsername(akun *headA, string x)
 {
-    akun *temp = head;
+    akun *temp = headA;
     while (temp != NULL)
     {
         if (temp->username == x)
@@ -30,7 +30,7 @@ akun *cariUsername(akun *head, string x)
     return NULL;
 }
 
-akun *Newakun(akun *head)
+akun *Newakun(akun *headA)
 {
     akun *newNode = new akun();
     char c, a;
@@ -40,9 +40,13 @@ akun *Newakun(akun *head)
     {
         cout << " Username : ";
         fflush(stdin), getline(cin, newNode->username);
-        akun *cek = cariUsername(head, newNode->username);
+        akun *cek = cariUsername(headA, newNode->username);
         if (cek != NULL)
         {
+            cout << "username telah digunakan, silahkan ganti" << endl;
+            system("pause");
+        }
+        else if(newNode->username == "admin"){
             cout << "username telah digunakan, silahkan ganti" << endl;
             system("pause");
         }
@@ -108,7 +112,7 @@ akun *Newakun(akun *head)
     }
 }
 
-void loadAkun(akun *&head, akun *&tail)
+void loadAkun(akun *&headA, akun *&tailA)
 {
     ifstream file("B2_Kelompok7/akun.csv");
 
@@ -119,7 +123,7 @@ void loadAkun(akun *&head, akun *&tail)
     }
 
     string line;
-    akun *current = nullptr; // Pointer tambahan
+    akun *current = NULL; // Pointer tambahan
     while (getline(file, line))
     {
         if (line.empty())
@@ -137,23 +141,23 @@ void loadAkun(akun *&head, akun *&tail)
             akun *temp = new akun;
             temp->username = username;
             temp->password = password;
-            temp->next = nullptr;
+            temp->next = NULL;
             temp->prev = current; // Mengatur node sebelumnya
 
-            if (head == nullptr)
+            if (headA == NULL)
             {
-                // Jika *head masih NULL, maka elemen baru menjadi head
-                head = temp;
-                temp->prev = nullptr; // Set prev dari elemen baru ke nullptr
-                tail = temp;          // elemen baru juga menjadi tail karena ini elemen pertama
+                // Jika *headA masih NULL, maka elemen baru menjadi headA
+                headA = temp;
+                temp->prev = NULL; // Set prev dari elemen baru ke NULL
+                tailA = temp;          // elemen baru juga menjadi tailA karena ini elemen pertama
             }
             else
             {
-                // Jika *head sudah ada, hubungkan elemen baru dengan yang ada
+                // Jika *headA sudah ada, hubungkan elemen baru dengan yang ada
                 temp->next = NULL;
-                temp->prev = tail;
-                tail->next = temp;
-                tail = temp; // Set tail ke elemen baru
+                temp->prev = tailA;
+                tailA->next = temp;
+                tailA = temp; // Set tailA ke elemen baru
             }
             current = temp; // Update node sebelumnya ke elemen baru
         }
@@ -163,7 +167,7 @@ void loadAkun(akun *&head, akun *&tail)
     cout << "Data telah dibaca dari file data_tiket.csv" << endl;
 }
 
-void saveAkun(akun *head)
+void saveAkun(akun *headA)
 {
     ofstream file("B2_Kelompok7/akun.csv");
 
@@ -173,7 +177,7 @@ void saveAkun(akun *head)
         return;
     }
 
-    akun *current = head;
+    akun *current = headA;
     while (current)
     {
         file << current->username << ",";
@@ -187,9 +191,9 @@ void saveAkun(akun *head)
     cout << "|             succesfully adding to akun.csv             |\n";
 }
 
-void login(akun *head)
+void login(akun *headA)
 {
-    akun *temp = head;
+    akun *temp = headA;
     for (int i = 0; i < 3; i++)
     {
         string user, pass;
@@ -224,7 +228,7 @@ void login(akun *head)
         c = '\0';
         cout << endl;
         cout << "=============================================\n";
-        akun *temp = head;
+        akun *temp = headA;
         while (temp != NULL)
         {
             if (user == "admin" && pass == "123admin")
@@ -256,35 +260,45 @@ void login(akun *head)
     }
 }
 
-void tambahakun(akun **head, akun **tail)
+bool isEmpty(akun *headA, akun *tailA)
+{
+
+    if (headA == NULL && tailA == NULL)
+    {
+        return true;
+    }
+    return false;
+}
+
+void tambahakun(akun **headA, akun **tailA)
 {
     system("cls");
     cout << "=============================================\n";
     cout << "|                SIGIN UP                   |\n";
     cout << "=============================================\n";
-    akun *newNode = Newakun(*head);
+    akun *newNode = Newakun(*headA);
     cout << endl;
     cout << "=============================================\n";
-    if (head == NULL && tail == NULL)
+    if (isEmpty(*headA, *tailA))
     {
-        *head = newNode;
-        *tail = newNode;
+        *headA = newNode;
+        *tailA = newNode;
     }
     else
     {
         cout << endl;
         newNode->next = NULL;
-        newNode->prev = (*tail);
-        (*tail)->next = newNode;
-        *tail = newNode;
+        newNode->prev = (*tailA);
+        (*tailA)->next = newNode;
+        *tailA = newNode;
     }
 }
 
 int main()
 {
-    akun *head = NULL;
-    akun *tail = NULL;
-    loadAkun(head, tail);
+    akun *headA = NULL;
+    akun *tailA = NULL;
+    loadAkun(headA, tailA);
     string x = "|                  LOGIN                    |";
     string b = "|                 SIGN IN                   |";
     string c = "|                  EXIT                     |";
@@ -314,13 +328,14 @@ int main()
         {
             if (pilih == 1)
             {
-                login(head);
+                login(headA);
       
             }
             else if (pilih == 2)
             {
-                tambahakun(&head, &tail);
-                saveAkun(head);
+                tambahakun(&headA, &tailA);
+                system("pause");
+                saveAkun(headA);
                 cout << "==========================================================\n";
                 system("pause");
                 main();
@@ -328,7 +343,7 @@ int main()
             }
             else if (pilih == 3)
             {
-                saveAkun(head);
+                saveAkun(headA);
                 cout << "==========================================================\n";
                 cout << "|     Terima Kasih Telah Menggunakan Program Kami!!!     |\n";
                 cout << "==========================================================\n";
